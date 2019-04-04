@@ -76,26 +76,66 @@ module Enumerable
 
     # 8 - Create #my_map
     def my_map
+      arr = []
+      self.my_each {|item| arr << (proc.nil? ? yield(item) : proc.call(item))}
+      return arr
+
     end
 
     # 9 - Create #my_inject
-    def my_inject
+    def my_inject(init=nil, sym=nil)
+      if init && sym
+        self.my_each do |item|
+            init = item.method(sym).call(init)
+        end
+      elsif init && sym.nil? && !block_given?
+        sym = init
+        init = self.first
+        self[1..-1].my_each do |item|
+            init = item.method(sym).call(init)
+        end
+      elsif block_given?
+        arr = []
+        if init.nil?
+            init = self.first
+            arr = self[1..-1]
+        else
+            arr = self
+        end
+        arr.my_each do |item|
+            init = yield(init,item)
+        end
+      else
+        raise ArgumentError, "Incorrect arguments provided" 
+      end
+
+      return init
     end
 
     # 10 - Test your #my_inject by creating a method called #multiply_els which multiplies all the elements of 
     #      the array together by using #my_inject, e.g. multiply_els([2,4,5]) #=> 40
-    def my_inject
-    end
+    #def my_inject
+    #end
 
     # 11 - Modify your #my_map method to take a proc instead.
-    def my_map
-    end
+    #def my_map
+    #end
 
     # 12 - Modify your #my_map method to take either a proc or a block. It won’t be necessary to apply both a proc and
     #      a block in the same #my_map call since you could get the same effect by chaining together one #my_map 
     #      call with the block and one with the proc. This approach is also clearer, since the user doesn’t have to 
     #      remember whether the proc or block will be run first. So if both a proc and a block are given, only execute the proc.
-    def my_map
-    end
+    #def my_map
+    #end
+
+    
 
   end
+
+
+
+  def multiply_els(array)
+    return array.my_inject(:+)
+  end
+
+  puts multiply_els([2,4,5])
