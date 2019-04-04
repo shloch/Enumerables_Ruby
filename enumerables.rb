@@ -13,36 +13,65 @@ module Enumerable
       for i in 0...self.size
         yield(self[i])
       end
-      p self
       return self
     end
 
     #  2- Create #my_each_with_index in the same way.
     def my_each_with_index 
+      for i in 0...self.size
+        yield(self[i], i)
+      end
+      return self
     end
 
     #  3-Create #my_select in the same way, though you may use #my_each in your definition (but not #each).
     def my_select
-      sel_array = []
-      self.my_each {|elm| sel_array << elm if yield(elm)}
-      
-      sel_array
+      arr = []
+      self.my_each do |item|
+          arr << item if yield(item)
+      end
+      return arr
     end
 
     # 4 - Create #my_all?
     def my_all?
+      self.my_each do |item|
+        return false unless yield(item)
+      end
+      return true
     end 
 
     # 5 - Create #my_any?
     def my_any?
+      self.my_each do |item|
+        return true if yield(item)
+      end
+      return false
     end 
 
     # 6 - Create #my_none?
-    def my_my_noneany?
+    def my_none?
+      self.my_any? do |item|
+        return false if yield(item)
+      end
+      return true
     end
 
     # 7 - Create #my_count
-    def my_count
+    def my_count(arg=nil)
+      if !(arg.nil?)
+        i = 0
+        self.my_each do |item|
+            i += 1 if item == arg
+        end
+        return i
+      elsif block_given?
+        return self.my_select {|item| yield(item)}.length
+      else
+        i = 0
+        self.my_each {|item| i += 1}
+        return i
+      end
     end
 
     # 8 - Create #my_map
