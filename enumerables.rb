@@ -1,7 +1,17 @@
 module Enumerable  
   def my_each
-    for i in 0...self.size
-      yield(self[i])
+    type = self.class
+    if type == Array || type == Range
+      for item in self
+        yield item
+      end
+    elsif type == Hash
+      keys = self.keys
+      for key in keys
+        value = self[key]
+        yield(key)
+        yield(value)
+      end
     end
     return self
   end
