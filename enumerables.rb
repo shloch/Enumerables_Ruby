@@ -1,9 +1,3 @@
-=begin
-    
-rescue => exception
-    practicing RUBY ENUMERABLES by building my own methods
-=end
-
 module Enumerable  
   def my_each
     for i in 0...self.size
@@ -105,5 +99,3 @@ end
 def multiply_els(array)
   return array.my_inject(:+)
 end
-
-puts multiply_els([2,4,5])
