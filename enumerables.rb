@@ -51,7 +51,12 @@ module Enumerable
       end
       return total
     elsif block_given?
-      return self.my_each {|item| yield(item)}.size
+      total= 0
+      mappings = self.my_map {|item| yield(item)}
+      mappings.my_each do |item|
+        total += 1 if item == true
+      end
+      return total
     else
       total = 0
       self.my_each { |item| total += 1 }
