@@ -1,19 +1,23 @@
 module Enumerable  
   def my_each
     type = self.class
-    if type == Array || type == Range
-      for item in self
-        yield item
+    if block_given?
+      if type == Array || type == Range
+        for item in self
+          yield item
+        end
+      elsif type == Hash
+        keys = self.keys
+        for key in keys
+          value = self[key]
+          yield(key)
+          yield(value)
+        end
       end
-    elsif type == Hash
-      keys = self.keys
-      for key in keys
-        value = self[key]
-        yield(key)
-        yield(value)
-      end
+      return self
+    else
+      return self.to_enum
     end
-    return self
   end
   
   def my_each_with_index 
